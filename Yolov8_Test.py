@@ -16,6 +16,8 @@ model = keras_cv.models.YOLOV8Backbone.from_preset("yolo_v8_l_backbone")
 # Perform object detection
 output = model(input_data)
 
+# Testing the output structure
+print(output)
 
 # This depends on your model's specific output format
 boxes = output['boxes']
