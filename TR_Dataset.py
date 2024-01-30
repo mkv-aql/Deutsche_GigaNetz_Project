@@ -47,4 +47,31 @@ for fields in classes:
         shaded_img = adjust_gamma(image)
 
         image = cv2.resize(image, (image_size, image_size), 0, 0, cv2.INTER_LINEAR)
-        
+        image = image.astype(np.float32)
+        image = np.multiply(image, 1.0 / 255.0)
+
+        brght_img = cv2.resize(brght_img, (image_size, image_ size), 0, 0, cv2.INTER_LINEAR)
+        brght_img = brght_img.astype(np.float32)
+        brght_img = np.multiply(brght_img, 1.0 / 255.0)
+
+        shaded_img = cv2.resize(shaded_img, (image_size, image_size), 0, 0, cv2.INTER_LINEAR)
+        shaded_img = shaded_img.astype(np.float32)
+        shaded_img = np.multiply(brght_img, 1.0 / 255.0)
+
+#         balancing input images, because there are more asphalt and fewer paved and unpaved
+        if index == 0: #asphalt
+            images.append(image)
+            images.append(brght_img)
+            images.append(shaded_img)
+
+        elif index == 1: #paved
+            for i in range(3):
+                images.append(image)
+                images.append(brght_img)
+                images.append(shaded_img)
+
+        elif index == 2: #unpaved
+            for i in range(6):
+                images.append(image)
+                images.append(brght_img)
+                images.append(shaded_img)
