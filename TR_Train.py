@@ -11,8 +11,9 @@ import os
 #Adding Seed so that random initialization is consistent
 from numpy.random import seed
 seed(1)
-from tensorflow import set_random_seed
-set_random_seed(2)
+#from tensorflow import set_random_seed #tf version 1 compatibility, tf version 2 uses tf.random.set_seed
+#set_random_seed(2)
+tf.random.set_seed(2)
 
 #input data path
 classes = os.listdir('C:/Users/AGAM MUHAJIR/Desktop/Thiago_Rateke_Dataset/GT_1_all/')
@@ -21,11 +22,11 @@ num_classes = len(classes)
 #print(classes)
 # print(num_classes)
 
-batch_size = 32
+batch_size = 3 # will afffect RAM usage, usually 32 (lower for smaller RAM)
 validation_size = 0.2 # 20% of the data will automatically be used for validation
 img_size = 128 #Resize input images
 num_channels = 3 #RGB channels
-train_path = 'C:/Users/AGAM MUHAJIR/Desktop/Thiago_Rateke_Dataset/GT_1/'
+train_path = 'C:/Users/AGAM MUHAJIR/Desktop/Thiago_Rateke_Dataset/GT_1_all/'
 
 data = dataset.read_train_sets(train_path, img_size, classes, validation_size = validation_size)
 
@@ -129,7 +130,7 @@ optimizer = tf.train.AdamOptimizer(learning_rate = 1e-4).minimize(cost)
 correct_prediction = tf.equal(y_pred_cls, y_true_cls)
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-session.run(tf.global_variables_initilizer())
+session.run(tf.global_variables_initializer()) #Running the training
 
 def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
     acc = session.run(accuracy, feed_dict=feed_dict_train)
@@ -139,7 +140,16 @@ def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
 
 total_iterations = 0
 
-saver = tf.train.Saver()
+#Saving the model and also creating a folder for it
+saver = tf.train.Saver() #saving the model
+model_dir = 'C:/Users/AGAM MUHAJIR/Desktop/Thiago_Rateke_Dataset/Trained_Models/'
+model_name = 'roadsurface-model'
+
+#Create the directory if it does not exist
+if not os.path.exists(model_dir):
+    os.makedirs(model_dir)
+
+
 
 def train(num_iteration):
     global total_iterations
@@ -158,7 +168,9 @@ def train(num_iteration):
             epoch = int(i / int(data.train.num_examples / batch_size))
 
             show_progress(epoch, feed_dict_tr, feed_dict_val, val_loss)
-            saver.save(session, './roadsurface-model')
+            # Save the model. You can also include the epoch in the filename.
+            saver.save(session, os.path.join(model_dir, model_name), global_step=epoch)
+            # saver.save(session, './roadsurface-model')
 
     total_iterations += num_iteration
 

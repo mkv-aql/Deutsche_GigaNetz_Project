@@ -207,7 +207,7 @@ class DataSet(object):
         return self._images[start:end], self._labels[start:end], self._img_names[start:end], self._cls[start:end]
 
 
-def read_train_sets(train_path, image_size, classes, valdiation_size):
+def read_train_sets(train_path, image_size, classes, validation_size):
     class DataSets(object):
         pass
     data_sets = DataSets()
