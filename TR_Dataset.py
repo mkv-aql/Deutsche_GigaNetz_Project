@@ -145,6 +145,7 @@ def load_train(train_path, image_size, classes):
 
     return images, labels, img_names, cls
 
+# Define DataSet class, to handle a single dataset
 class DataSet(object):
 
     def __init__(self, images, labels, img_names, cls):
@@ -208,14 +209,14 @@ class DataSet(object):
 
 
 def read_train_sets(train_path, image_size, classes, validation_size):
-    class DataSets(object):
-        pass
-    data_sets = DataSets()
 
+    #Turn them data into arrays
     images, labels, img_names, cls = load_train(train_path, image_size, classes)
+    #Shuffle the data arrays
     images, labels, img_names, cls = shuffle(images, labels, img_names, cls)
 
-    #Split data into training and validation
+    #Turn the validation_size type into an integer, just in case it is a decimal
+        #images.shape[0] will return height size in pixels
     if isinstance(validation_size, float):
         validation_size = int(validation_size * images.shape[0])
 
@@ -231,6 +232,14 @@ def read_train_sets(train_path, image_size, classes, validation_size):
     validation_img_names = img_names[:validation_size]
     validation_cls = cls[:validation_size]
 
+    # Simple container or structure to hold training and validation sets called from class DataSet
+        # Create DataSets instance so that it can be called from the class DataSet (data_sets = DataSet())
+    class DataSets(object):
+        pass
+
+    data_sets = DataSets()
+
+    #Assign the training and validation data to the DataSets class instances / call the DataSet class object instance twice (train and valid)
     data_sets.train = DataSet(train_images, train_labels, train_img_names, train_cls)
     data_sets.valid = DataSet(validation_images, validation_labels, validation_img_names, validation_cls)
 
